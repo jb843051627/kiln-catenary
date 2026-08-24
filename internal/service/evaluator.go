@@ -4,13 +4,14 @@ import (
 	"context"
 	"fmt"
 	"github.com/jb843051627/kiln-catenary/internal/model"
+	"time"
 )
 
 func (a *App) evaluateRun(ctx context.Context, run model.FiringRun) error {
 	if err := guard(ctx); err != nil {
 		return err
 	}
-	values, err := a.DB.ListSamples(ctx, model.SampleFilter{KilnID: run.KilnID, RunID: run.ID, Limit: 1000})
+	values, err := a.DB.ListSamples(ctx, model.SampleFilter{KilnID: run.KilnID, RunID: run.ID, Start: run.StartedAt, End: a.Clock.Now().Add(time.Nanosecond), Limit: 1000})
 	if err != nil {
 		return err
 	}

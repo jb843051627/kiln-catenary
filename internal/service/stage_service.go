@@ -57,6 +57,9 @@ func (a *App) FinishStage(ctx context.Context, id string) error {
 	return a.DB.UpdateStageStatus(ctx, id, model.StageComplete)
 }
 func (a *App) StageAvailableAt(ctx context.Context, id string, at, start, end time.Time) (bool, error) {
+	if err := guard(ctx); err != nil {
+		return false, err
+	}
 	stage, err := a.GetStage(ctx, id)
 	if err != nil {
 		return false, err

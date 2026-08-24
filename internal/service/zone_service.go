@@ -48,3 +48,16 @@ func (a *App) DisableZone(ctx context.Context, id string) error {
 	zone.Enabled = false
 	return a.DB.UpdateZone(ctx, zone)
 }
+func (a *App) AdmitSample(ctx context.Context, kilnID string, temperature, pressure float64) (bool, error) {
+	if err := guard(ctx); err != nil {
+		return false, err
+	}
+	kiln, err := a.GetKiln(ctx, kilnID)
+	if err != nil {
+		return false, err
+	}
+	if !kiln.Active {
+		return false, fmt.Errorf("%w: kiln is disabled", model.ErrConflict)
+	}
+	return kiln.Safe(temperature, pressure), nil
+}

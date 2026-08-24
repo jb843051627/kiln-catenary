@@ -9,7 +9,7 @@ const (
 	StageReady    = "ready"
 	StageRunning  = "running"
 	StageComplete = "complete"
-	StageSkipped  = "skipped"
+	StageDeferred = "deferred"
 	StageFailed   = "failed"
 )
 

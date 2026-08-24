@@ -15,5 +15,5 @@ func IsTerminalRun(status string) bool {
 }
 
 func IsTerminalStage(status string) bool {
-	return status == StageComplete || status == StageSkipped || status == StageFailed
+	return status == StageComplete || status == StageDeferred || status == StageFailed
 }

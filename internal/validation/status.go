@@ -16,7 +16,7 @@ func StageTransition(current, next string) error {
 	if current == model.StageReady && next == model.StageRunning {
 		return nil
 	}
-	if current == model.StageRunning && (next == model.StageComplete || next == model.StageFailed || next == model.StageSkipped) {
+	if current == model.StageRunning && (next == model.StageComplete || next == model.StageFailed || next == model.StageDeferred) {
 		return nil
 	}
 	return fmt.Errorf("%w: stage %s to %s", model.ErrInvalidState, current, next)

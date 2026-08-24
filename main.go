@@ -53,9 +53,18 @@ func smokeTest(app *service.App) error {
 	if response.StatusCode != http.StatusOK {
 		return fmt.Errorf("health returned %d", response.StatusCode)
 	}
-	kiln, err := app.CreateKiln(context.Background(), model.Kiln{Code: "SMOKE", Cell: "north", MaxTemperature: 1400, MaxPressure: 2, Atmosphere: "neutral", Active: true})
+	kilns, err := app.ListKilns(context.Background(), false)
 	if err != nil {
 		return err
+	}
+	var kiln model.Kiln
+	if len(kilns) > 0 {
+		kiln = kilns[0]
+	} else {
+		kiln, err = app.CreateKiln(context.Background(), model.Kiln{Code: "SMOKE", Cell: "north", MaxTemperature: 1400, MaxPressure: 2, Atmosphere: "neutral", Active: true})
+		if err != nil {
+			return err
+		}
 	}
 	if _, err := app.GetKiln(context.Background(), kiln.ID); err != nil {
 		return err

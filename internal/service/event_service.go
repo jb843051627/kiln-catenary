@@ -30,7 +30,10 @@ func (a *App) ResolveEvent(ctx context.Context, id string) error {
 	if event.Resolved {
 		return fmt.Errorf("%w: event already resolved", model.ErrInvalidState)
 	}
-	return a.DB.ResolveEvent(ctx, id)
+	if err := a.DB.ResolveEvent(ctx, id); err != nil {
+		return fmt.Errorf("resolve event: %w", err)
+	}
+	return nil
 }
 func (a *App) ActiveEventCount(ctx context.Context, kilnID string) (int, error) {
 	if err := guard(ctx); err != nil {

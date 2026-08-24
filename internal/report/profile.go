@@ -1,6 +1,7 @@
 package report
 
 import (
+	"context"
 	"github.com/jb843051627/kiln-catenary/internal/model"
 	"sort"
 	"time"
@@ -20,6 +21,14 @@ func NewThermalWindow(kilnID string, start, end time.Time, values []model.Atmosp
 }
 func (w ThermalWindow) Clone() ThermalWindow {
 	return NewThermalWindow(w.KilnID, w.Start, w.End, w.Samples)
+}
+func (w ThermalWindow) CloneContext(ctx context.Context) (ThermalWindow, error) {
+	select {
+	case <-ctx.Done():
+		return ThermalWindow{}, ctx.Err()
+	default:
+	}
+	return w.Clone(), nil
 }
 func (w ThermalWindow) Count() int { return len(w.Samples) }
 func (w ThermalWindow) Last() (model.AtmosphereSample, bool) {

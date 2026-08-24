@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"sort"
 	"time"
 )
@@ -23,4 +24,13 @@ func SortStagesBySequence(items []ThermalStage) []ThermalStage {
 	copyItems := append([]ThermalStage(nil), items...)
 	sort.SliceStable(copyItems, func(i, j int) bool { return copyItems[i].Sequence < copyItems[j].Sequence })
 	return copyItems
+}
+
+func SortStagesWithContext(ctx context.Context, items []ThermalStage) ([]ThermalStage, error) {
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	default:
+	}
+	return SortStagesBySequence(items), nil
 }

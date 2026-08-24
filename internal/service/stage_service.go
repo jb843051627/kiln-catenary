@@ -24,7 +24,11 @@ func (a *App) GetStage(ctx context.Context, id string) (model.ThermalStage, erro
 	if err := guard(ctx); err != nil {
 		return model.ThermalStage{}, err
 	}
-	return a.DB.GetStage(ctx, id)
+	stage, err := a.DB.GetStage(ctx, id)
+	if err != nil {
+		return model.ThermalStage{}, fmt.Errorf("stage lookup: %w", err)
+	}
+	return stage, nil
 }
 func (a *App) ListStages(ctx context.Context, kilnID string) ([]model.ThermalStage, error) {
 	if err := guard(ctx); err != nil {

@@ -23,7 +23,11 @@ func (a *App) GetZone(ctx context.Context, id string) (model.Zone, error) {
 	if err := guard(ctx); err != nil {
 		return model.Zone{}, err
 	}
-	return a.DB.GetZone(ctx, id)
+	zone, err := a.DB.GetZone(ctx, id)
+	if err != nil {
+		return model.Zone{}, fmt.Errorf("zone lookup: %w", err)
+	}
+	return zone, nil
 }
 func (a *App) ListZones(ctx context.Context, kilnID string) ([]model.Zone, error) {
 	if err := guard(ctx); err != nil {

@@ -88,6 +88,7 @@ func (a *App) cacheSample(sample model.AtmosphereSample) {
 	a.recent[sample.KilnID] = values
 	a.recentMu.Unlock()
 }
+func (a *App) RefreshSampleCache(sample model.AtmosphereSample) { a.cacheSample(sample) }
 func (a *App) cachedLatest(kilnID string) (model.AtmosphereSample, bool) {
 	a.latestMu.RLock()
 	value, ok := a.latest[kilnID]

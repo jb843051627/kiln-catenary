@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jb843051627/kiln-catenary/internal/model"
+	"time"
 )
 
 func (a *App) CreateStage(ctx context.Context, stage model.ThermalStage) (model.ThermalStage, error) {
@@ -54,4 +55,11 @@ func (a *App) FinishStage(ctx context.Context, id string) error {
 		return fmt.Errorf("%w: stage cannot finish", model.ErrInvalidState)
 	}
 	return a.DB.UpdateStageStatus(ctx, id, model.StageComplete)
+}
+func (a *App) StageAvailableAt(ctx context.Context, id string, at, start, end time.Time) (bool, error) {
+	stage, err := a.GetStage(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return stage.Contains(at, start, end), nil
 }

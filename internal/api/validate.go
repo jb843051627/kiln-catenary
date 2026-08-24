@@ -30,6 +30,9 @@ func StageModel(in StageRequest) (model.ThermalStage, error) {
 	if err := validation.Positive(in.Sequence, "sequence"); err != nil {
 		return model.ThermalStage{}, err
 	}
+	if in.HoldSeconds < 1 {
+		return model.ThermalStage{}, fmt.Errorf("hold duration must be positive")
+	}
 	if in.KilnID == "" || in.Name == "" {
 		return model.ThermalStage{}, fmt.Errorf("kiln and stage name are required")
 	}

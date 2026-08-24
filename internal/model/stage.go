@@ -27,7 +27,7 @@ type ThermalStage struct {
 }
 
 func (s ThermalStage) Valid() bool {
-	return s.ID != "" && s.KilnID != "" && s.Name != "" && s.Sequence > 0 && s.Hold >= 0 && (s.Kind == StageRamp || s.Kind == StageHold || s.Kind == StageCool)
+	return s.ID != "" && s.KilnID != "" && s.Name != "" && s.Sequence > 0 && s.Hold > 0 && (s.Kind == StageRamp || s.Kind == StageHold || s.Kind == StageCool)
 }
 
 func (s ThermalStage) CanStart() bool {
@@ -40,4 +40,8 @@ func (s ThermalStage) CanFinish() bool {
 
 func (s ThermalStage) Duration() time.Duration {
 	return s.Hold
+}
+
+func (s ThermalStage) Contains(at, start, end time.Time) bool {
+	return !at.Before(start) && at.Before(end)
 }

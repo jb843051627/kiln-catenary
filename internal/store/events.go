@@ -68,7 +68,7 @@ func (d *DB) ListEvents(ctx context.Context, kilnID string, activeOnly bool) ([]
 }
 func (d *DB) CountActiveEvents(ctx context.Context, kilnID string) (int, error) {
 	var n int
-	err := d.SQL.QueryRowContext(ctx, `SELECT COUNT(1) FROM safety_events WHERE kiln_id = ? AND resolved = 0`, kilnID).Scan(&n)
+	err := d.SQL.QueryRowContext(ctx, `SELECT COUNT(1) FROM safety_events WHERE kiln_id = ? AND resolved = 0 AND severity IN (?, ?)`, kilnID, model.SeverityWarn, model.SeverityAlarm).Scan(&n)
 	return n, err
 }
 func (d *DB) EventsSince(ctx context.Context, kilnID string, since time.Time) ([]model.SafetyEvent, error) {

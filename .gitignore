@@ -1,0 +1,13 @@
+data/*.db
+data/*.db-shm
+data/*.db-wal
+*.db
+*.db-shm
+*.db-wal
+BUG_REPRO.md
+cases/
+metadata/
+_docker/
+create_*.py
+*_fields.json
+calibrate*.json

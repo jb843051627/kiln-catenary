@@ -25,7 +25,7 @@ func (a *App) GetZone(ctx context.Context, id string) (model.Zone, error) {
 	}
 	zone, err := a.DB.GetZone(ctx, id)
 	if err != nil {
-		return model.Zone{}, fmt.Errorf("zone lookup: %v", err)
+		return model.Zone{}, fmt.Errorf("zone lookup: %w", err)
 	}
 	return zone, nil
 }

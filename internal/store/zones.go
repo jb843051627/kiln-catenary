@@ -25,7 +25,7 @@ func scanZone(s scanner) (model.Zone, error) {
 func (d *DB) GetZone(ctx context.Context, id string) (model.Zone, error) {
 	z, err := scanZone(d.SQL.QueryRowContext(ctx, `SELECT id, kiln_id, name, target, ramp_rate, deviation_limit, enabled FROM zones WHERE id = ?`, id))
 	if err != nil {
-		return model.Zone{}, wrap("get zone", err)
+		return model.Zone{}, wrap("get zone", notFound(err))
 	}
 	return z, nil
 }

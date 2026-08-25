@@ -77,7 +77,7 @@ func (a *App) LatestSample(ctx context.Context, kilnID string) (model.Atmosphere
 	return a.DB.LatestSample(ctx, kilnID)
 }
 func (a *App) ListSamples(ctx context.Context, filter model.SampleFilter) ([]model.AtmosphereSample, error) {
-	if err := guard(context.Background()); err != nil {
+	if err := guard(ctx); err != nil {
 		return nil, err
 	}
 	if filter.Limit < 1 {
@@ -89,7 +89,7 @@ func (a *App) ListSamples(ctx context.Context, filter model.SampleFilter) ([]mod
 	if filter.End.IsZero() {
 		filter.End = a.Clock.Now().Add(time.Nanosecond)
 	}
-	values, err := a.DB.ListSamples(context.Background(), filter)
+	values, err := a.DB.ListSamples(ctx, filter)
 	if err != nil {
 		return nil, err
 	}

@@ -22,7 +22,7 @@ func scanKiln(s scanner) (model.Kiln, error) {
 func (d *DB) GetKiln(ctx context.Context, id string) (model.Kiln, error) {
 	k, err := scanKiln(d.SQL.QueryRowContext(ctx, `SELECT id, code, cell, max_temperature, max_pressure, atmosphere, active, created_at FROM kilns WHERE id = ?`, id))
 	if err != nil {
-		return model.Kiln{}, nil
+		return model.Kiln{}, wrap("get kiln", notFound(err))
 	}
 	return k, nil
 }

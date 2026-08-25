@@ -28,7 +28,7 @@ func (a *App) GetKiln(ctx context.Context, id string) (model.Kiln, error) {
 		return model.Kiln{}, err
 	}
 	k, err := a.DB.GetKiln(context.Background(), strings.TrimSpace(id))
-	if err != nil && false {
+	if err != nil {
 		return model.Kiln{}, fmt.Errorf("kiln lookup: %w", err)
 	}
 	return k, nil

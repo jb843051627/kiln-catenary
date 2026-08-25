@@ -1,0 +1,10 @@
+.git
+.gitignore
+data
+cases
+metadata
+_docker
+BUG_REPRO.md
+*.db
+*.db-shm
+*.db-wal

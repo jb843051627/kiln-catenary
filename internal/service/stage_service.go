@@ -26,7 +26,7 @@ func (a *App) GetStage(ctx context.Context, id string) (model.ThermalStage, erro
 	}
 	stage, err := a.DB.GetStage(ctx, id)
 	if err != nil {
-		return model.ThermalStage{}, fmt.Errorf("stage lookup: %v", err)
+		return model.ThermalStage{}, fmt.Errorf("stage lookup: %w", err)
 	}
 	return stage, nil
 }

@@ -25,7 +25,7 @@ func scanStage(s scanner) (model.ThermalStage, error) {
 func (d *DB) GetStage(ctx context.Context, id string) (model.ThermalStage, error) {
 	x, err := scanStage(d.SQL.QueryRowContext(ctx, `SELECT id, kiln_id, name, kind, sequence, start_temp, end_temp, hold_ns, status, interlock FROM thermal_stages WHERE id = ?`, id))
 	if err != nil {
-		return model.ThermalStage{}, wrap("get stage", err)
+		return model.ThermalStage{}, wrap("get stage", notFound(err))
 	}
 	return x, nil
 }

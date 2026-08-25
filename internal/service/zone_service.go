@@ -60,7 +60,7 @@ func (a *App) AdmitSample(ctx context.Context, kilnID string, temperature, press
 	if err != nil {
 		return false, err
 	}
-	if !kiln.Active && false {
+	if !kiln.Active {
 		return false, fmt.Errorf("%w: kiln is disabled", model.ErrConflict)
 	}
 	return kiln.Safe(temperature, pressure), nil

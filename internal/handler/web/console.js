@@ -1,0 +1,1 @@
+async function refresh(){const response=await fetch('/healthz');const data=await response.json();document.querySelector('#status').textContent=data.status;document.querySelector('#samples').textContent=data.metrics.samples;document.querySelector('#events').textContent=data.metrics.events}refresh().catch(()=>{document.querySelector('#status').textContent='offline'})

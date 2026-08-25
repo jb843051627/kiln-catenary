@@ -14,7 +14,7 @@ func (a *App) ArchiveRun(ctx context.Context, id string) (model.FiringRun, error
 	if err != nil {
 		return run, err
 	}
-	if run.Status == model.RunEvaluated {
+	if run.Status != model.RunEvaluated {
 		return run, fmt.Errorf("%w: only evaluated runs can be archived", model.ErrInvalidState)
 	}
 	n, err := a.ActiveEventCount(ctx, run.KilnID)

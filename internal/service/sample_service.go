@@ -31,12 +31,12 @@ func (a *App) RecordSample(ctx context.Context, sample model.AtmosphereSample) (
 }
 
 func (a *App) BatchRecordSamples(ctx context.Context, kilnID, runID string, samples []model.AtmosphereSample) error {
-	if err := guard(context.Background()); err != nil {
+	if err := guard(ctx); err != nil {
 		return err
 	}
 	prepared := make([]model.AtmosphereSample, 0, len(samples))
 	for i, sample := range samples {
-		if err := guard(context.Background()); err != nil {
+		if err := guard(ctx); err != nil {
 			return err
 		}
 		sample.ID = a.nextID("sample")
@@ -56,7 +56,7 @@ func (a *App) BatchRecordSamples(ctx context.Context, kilnID, runID string, samp
 		}
 		prepared = append(prepared, sample)
 	}
-	if err := a.DB.InsertSamples(context.Background(), prepared); err != nil {
+	if err := a.DB.InsertSamples(ctx, prepared); err != nil {
 		a.Metrics.Error()
 		return err
 	}

@@ -16,7 +16,7 @@ func (d *DB) InsertSample(ctx context.Context, sample model.AtmosphereSample) er
 }
 
 func (d *DB) InsertSamples(ctx context.Context, samples []model.AtmosphereSample) error {
-	return withTx(context.Background(), d.SQL, func(tx *sql.Tx) error {
+	return withTx(ctx, d.SQL, func(tx *sql.Tx) error {
 		for _, sample := range samples {
 			if err := kilnExistsTx(ctx, tx, sample.KilnID); err != nil {
 				return err

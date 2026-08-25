@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>窑炉烧成控制台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <p class="eyebrow">KILN CATENARY / FIELD CONSOLE</p>
+      <h1>烧成周期控制台</h1>
+      <p class="lede">查看温区状态、热工阶段和最近一次气氛采样。</p>
+    </header>
+    <section class="status-grid" aria-label="窑炉状态">
+      <article class="card card-primary">
+        <span class="label">当前窑炉</span>
+        <strong>North Kiln 04</strong>
+        <span class="muted">Firing run / holding</span>
+      </article>
+      <article class="card">
+        <span class="label">温度</span>
+        <strong>1,248°C</strong>
+        <span class="muted">目标 1,250°C</span>
+      </article>
+      <article class="card">
+        <span class="label">气氛</span>
+        <strong>Oxidizing</strong>
+        <span class="muted">稳定 18 分钟</span>
+      </article>
+    </section>
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">THERMAL PROFILE</p>
+          <h2>温区阶段</h2>
+        </div>
+        <button type="button" id="refresh">刷新采样</button>
+      </div>
+      <div class="stages" id="stages">
+        <div class="stage"><span>预热</span><b>完成</b></div>
+        <div class="stage active"><span>保温</span><b>进行中</b></div>
+        <div class="stage"><span>冷却</span><b>等待</b></div>
+      </div>
+      <p class="notice" id="notice" role="status">最近采样：刚刚更新</p>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

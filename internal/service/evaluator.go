@@ -7,8 +7,14 @@ import (
 	"time"
 )
 
-func (a *App) evaluateRun(ctx context.Context, run model.FiringRun) error {
+func evalGuard(ctx context.Context) error {
 	if err := guard(ctx); err != nil {
+		return fmt.Errorf("%w: %w", model.ErrCanceled, err)
+	}
+	return nil
+}
+func (a *App) evaluateRun(ctx context.Context, run model.FiringRun) error {
+	if err := evalGuard(ctx); err != nil {
 		return err
 	}
 	values, err := a.DB.ListSamples(ctx, model.SampleFilter{KilnID: run.KilnID, RunID: run.ID, Start: run.StartedAt, End: a.Clock.Now().Add(time.Nanosecond), Limit: 1000})
@@ -24,7 +30,7 @@ func (a *App) evaluateRun(ctx context.Context, run model.FiringRun) error {
 	}
 	safe := 0
 	for _, value := range values {
-		if err := guard(ctx); err != nil {
+		if err := evalGuard(ctx); err != nil {
 			return err
 		}
 		if value.InRange(kiln) {

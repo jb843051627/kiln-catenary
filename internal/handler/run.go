@@ -53,6 +53,8 @@ func (h *Handler) run(w http.ResponseWriter, r *http.Request) {
 			err = h.app.EvaluateRun(r.Context(), id)
 		case "queue":
 			err = h.app.QueueEvaluation(r.Context(), id)
+		case "cancel":
+			err = h.app.CancelEvaluation(id)
 		case "archive":
 			_, err = h.app.ArchiveRun(r.Context(), id)
 		default:

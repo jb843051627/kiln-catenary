@@ -36,7 +36,7 @@ func (q *Queue) loop() {
 		select {
 		case item := <-q.jobs:
 			if item.job != nil {
-				if err := item.job(context.Background()); err != nil {
+				if err := item.job(item.ctx); err != nil {
 					select {
 					case q.errors <- err:
 					default:

@@ -23,10 +23,12 @@ type App struct {
 	sequence   int64
 	evalMu     sync.Mutex
 	evaluating map[string]bool
+	cancelMu   sync.Mutex
+	cancels    map[string]context.CancelFunc
 }
 
 func NewApp(db *store.DB) *App {
-	return &App{DB: db, Clock: clock.System{}, Queue: worker.NewQueue(32), Metrics: metrics.New(), latest: make(map[string]model.AtmosphereSample), recent: make(map[string][]model.AtmosphereSample), evaluating: make(map[string]bool)}
+	return &App{DB: db, Clock: clock.System{}, Queue: worker.NewQueue(32), Metrics: metrics.New(), latest: make(map[string]model.AtmosphereSample), recent: make(map[string][]model.AtmosphereSample), evaluating: make(map[string]bool), cancels: make(map[string]context.CancelFunc)}
 }
 func (a *App) Close() error {
 	if a.Queue != nil {
@@ -114,4 +116,22 @@ func (a *App) endEvaluation(runID string) {
 	a.evalMu.Lock()
 	delete(a.evaluating, runID)
 	a.evalMu.Unlock()
+}
+func (a *App) registerCancel(runID string, cancel context.CancelFunc) bool {
+	a.cancelMu.Lock()
+	defer a.cancelMu.Unlock()
+	if _, ok := a.cancels[runID]; ok {
+		return false
+	}
+	a.cancels[runID] = cancel
+	return true
+}
+func (a *App) discardCancel(runID string) (context.CancelFunc, bool) {
+	a.cancelMu.Lock()
+	defer a.cancelMu.Unlock()
+	cancel, ok := a.cancels[runID]
+	if ok {
+		delete(a.cancels, runID)
+	}
+	return cancel, ok
 }

@@ -51,7 +51,7 @@ func (a *App) AdvanceRun(ctx context.Context, id, next string) error {
 	return a.transitionRun(ctx, &run, next)
 }
 func (a *App) EvaluateRun(ctx context.Context, id string) error {
-	if err := guard(ctx); err != nil {
+	if err := evalGuard(ctx); err != nil {
 		return err
 	}
 	if !a.beginEvaluation(id) {
@@ -65,13 +65,36 @@ func (a *App) EvaluateRun(ctx context.Context, id string) error {
 	if run.Status != model.RunCooling {
 		return fmt.Errorf("%w: only cooling runs can be evaluated", model.ErrInvalidState)
 	}
+	if err := evalGuard(ctx); err != nil {
+		return err
+	}
 	return a.evaluateRun(ctx, run)
 }
 func (a *App) QueueEvaluation(ctx context.Context, id string) error {
-	if err := guard(context.Background()); err != nil {
+	if err := guard(ctx); err != nil {
 		return err
 	}
-	return a.Queue.Submit(context.Background(), func(jobCtx context.Context) error { return a.EvaluateRun(jobCtx, id) })
+	jobCtx, cancel := context.WithCancel(context.Background())
+	if !a.registerCancel(id, cancel) {
+		cancel()
+		return fmt.Errorf("%w: evaluation already queued", model.ErrConflict)
+	}
+	if err := a.Queue.Submit(jobCtx, func(jobCtx context.Context) error {
+		defer a.discardCancel(id)
+		return a.EvaluateRun(jobCtx, id)
+	}); err != nil {
+		a.discardCancel(id)
+		return fmt.Errorf("%w: %w", model.ErrCanceled, err)
+	}
+	return nil
+}
+func (a *App) CancelEvaluation(id string) error {
+	cancel, ok := a.discardCancel(id)
+	if !ok {
+		return fmt.Errorf("%w: no queued evaluation for run %s", model.ErrConflict, id)
+	}
+	cancel()
+	return nil
 }
 func (a *App) RejectRun(ctx context.Context, id, reason string) error {
 	run, err := a.GetRun(ctx, id)

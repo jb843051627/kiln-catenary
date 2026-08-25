@@ -26,6 +26,8 @@ func writeError(w http.ResponseWriter, err error) {
 		status = http.StatusNotFound
 	case errors.Is(err, model.ErrConflict), errors.Is(err, model.ErrInvalidState):
 		status = http.StatusConflict
+	case errors.Is(err, model.ErrCanceled):
+		status = http.StatusGone
 	case errors.Is(err, model.ErrSafety):
 		status = http.StatusUnprocessableEntity
 	}

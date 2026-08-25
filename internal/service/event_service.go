@@ -31,7 +31,7 @@ func (a *App) ResolveEvent(ctx context.Context, id string) error {
 		return fmt.Errorf("%w: event already resolved", model.ErrInvalidState)
 	}
 	if err := a.DB.ResolveEvent(ctx, id); err != nil {
-		return fmt.Errorf("resolve event: %v", err)
+		return fmt.Errorf("resolve event: %w", err)
 	}
 	return nil
 }

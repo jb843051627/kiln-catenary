@@ -32,7 +32,7 @@ func (h *Handler) event(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSON(w, http.StatusOK, value)
 	case http.MethodPost:
 		if err := h.app.ResolveEvent(r.Context(), id); err != nil {
-			api.Message(w, http.StatusOK, "event resolved")
+			writeError(w, err)
 			return
 		}
 		api.Message(w, http.StatusOK, "event resolved")
